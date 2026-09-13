@@ -38,14 +38,44 @@ class MockOfflineProvider(BaseLLMProvider):
         prompt_lower = prompt.lower()
         
         # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # 1. Hỗ trợ Đề tài 1.2: Trợ lý Thư viện
+        if "gia hạn" in prompt_lower or "renew" in prompt_lower:
+            book_id = "BK002"
+            for b in ["BK001", "BK002", "BK003"]:
+                if b.lower() in prompt_lower:
+                    book_id = b
+                    break
+            card_id = "TV2026001"
+            if "tv2026002" in prompt_lower:
+                card_id = "TV2026002"
+            days = 14 if "14" in prompt_lower else 7
+            return {
+                "type": "tool_call",
+                "tool_name": "renew_book",
+                "arguments": {"book_id": book_id, "library_card_id": card_id, "extend_days": days},
+                "thought": f"Người dùng muốn gia hạn sách {book_id} cho thẻ {card_id}. Tôi sẽ gọi tool renew_book."
+            }
+        elif any(k in prompt_lower for k in ["bk001", "bk002", "bk003", "tv2026001", "tv2026002"]) or ("sách" in prompt_lower and "tra cứu" in prompt_lower):
+            book_id = "BK001"
+            for k in ["BK001", "BK002", "BK003", "TV2026001", "TV2026002"]:
+                if k.lower() in prompt_lower:
+                    book_id = k
+                    break
+            return {
+                "type": "tool_call",
+                "tool_name": "library_query",
+                "arguments": {"book_id": book_id},
+                "thought": f"Người dùng muốn tra cứu thông tin thư viện cho mã {book_id}. Tôi sẽ gọi tool library_query."
+            }
+        # 2. Hỗ trợ Đề tài 1.1: Quản lý học vụ (tương thích ngược)
+        elif "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
             return {
                 "type": "tool_call",
                 "tool_name": "schedule_appointment",
                 "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
                 "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        elif "sv2026001" in prompt_lower or "học vụ" in prompt_lower:
             return {
                 "type": "tool_call",
                 "tool_name": "academic_query",
@@ -55,8 +85,8 @@ class MockOfflineProvider(BaseLLMProvider):
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": f"[Mock Agent Response]: Xin chào! Thư viện VinUni mở cửa từ 8:00 đến 21:00 các ngày trong tuần. Sinh viên được mượn tối đa 5 cuốn sách trong vòng 14 ngày và có thể gia hạn 1 lần.",
+                "thought": "Câu hỏi chung về quy định thư viện, trả lời trực tiếp không cần gọi Tool."
             }
 
 

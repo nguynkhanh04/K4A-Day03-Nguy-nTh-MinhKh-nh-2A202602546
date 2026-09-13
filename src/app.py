@@ -121,17 +121,32 @@ def run_react_agent(user_query: str, provider, mcp_server: MCPAcademicServer) ->
                 if obs_data.get("status") == "SUCCESS":
                     if "data" in obs_data:
                         d = obs_data["data"]
-                        final_answer = (
-                            f"Kết quả tra cứu cho sinh viên {obs_data.get('student_id', '')} ({d.get('full_name', '')}): "
-                            f"Lớp {d.get('class', '')}, GPA: {d.get('gpa', '')}, Email: {d.get('email', '')}, "
-                            f"Trạng thái: {d.get('status', '')}, Cố vấn: {d.get('advisor', '')}."
-                        )
+                        if "title" in d:
+                            # Kết quả tra cứu sách
+                            final_answer = (
+                                f"Kết quả tra cứu sách {obs_data.get('book_id', '')}: "
+                                f"'{d.get('title', '')}' của {d.get('author', '')}. "
+                                f"Thể loại: {d.get('category', '')}, Vị trí: {d.get('location', '')}. "
+                                f"Tình trạng: {d.get('status', '')} ({d.get('available_copies', 0)}/{d.get('total_copies', 0)} bản có sẵn)."
+                            )
+                        elif "member_name" in d:
+                            # Kết quả tra cứu thẻ thư viện
+                            books = d.get('books_borrowed', [])
+                            books_info = ', '.join([b.get('title', '') for b in books]) if books else 'Không có'
+                            final_answer = (
+                                f"Thông tin thẻ thư viện {obs_data.get('book_id', '')}: "
+                                f"{d.get('member_name', '')} ({d.get('member_type', '')}). "
+                                f"Email: {d.get('email', '')}. Trạng thái: {d.get('status', '')}. "
+                                f"Sách đang mượn: {books_info}."
+                            )
+                        else:
+                            final_answer = f"Đã hoàn tất xử lý qua MCP Server: {json.dumps(obs_data, ensure_ascii=False)}"
                     elif "message" in obs_data:
                         final_answer = obs_data["message"]
                     else:
                         final_answer = f"Đã hoàn tất xử lý qua MCP Server: {json.dumps(obs_data, ensure_ascii=False)}"
                 elif obs_data.get("status") == "NOT_FOUND":
-                    final_answer = obs_data.get("message", "Không tìm thấy thông tin sinh viên yêu cầu.")
+                    final_answer = obs_data.get("message", "Không tìm thấy thông tin yêu cầu trong thư viện.")
                 else:
                     final_answer = f"Phản hồi từ công cụ: {json.dumps(obs_data, ensure_ascii=False)}"
             
@@ -177,11 +192,11 @@ if __name__ == "__main__":
     print(f"✅ Đã tải thành công {len(tests)} Test Cases thử nghiệm.\n")
     
     if "--interactive" in sys.argv:
-        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với ReAct Agent:")
+        print("🎮 [INTERACTIVE MODE] Trò chuyện trực tiếp với Trợ lý Thư viện:")
         print("💡 Gợi ý câu hỏi thử nghiệm:")
-        print("   - Câu hỏi chung: 'Quy chế học vụ VinUni yêu cầu bao nhiêu tín chỉ?'")
-        print("   - Tra cứu học vụ: 'Hãy tra cứu thông tin học vụ của sinh viên SV2026001'")
-        print("   - Đặt lịch hẹn: 'Đặt lịch hẹn tư vấn cho SV2026001 vào 14:00 ngày 15/09/2026'")
+        print("   - Câu hỏi chung: 'Quy định mượn trả sách của thư viện VinUni là gì?'")
+        print("   - Tra cứu sách: 'Hãy tra cứu thông tin cuốn sách có mã BK001'")
+        print("   - Gia hạn sách: 'Gia hạn sách BK002 thêm 14 ngày, mã thẻ TV2026001'")
         print("   - Gõ 'exit' hoặc 'quit' để kết thúc phiên trò chuyện.\n")
         while True:
             try:
@@ -227,7 +242,7 @@ if __name__ == "__main__":
         print("  2. Chạy toàn bộ Test Cases:    python src/app.py --all\n")
         
         sample_query = tests[1]["question"]
-        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu học vụ) ---")
+        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu sách thư viện) ---")
         logs = run_react_agent(sample_query, provider, mcp_server)
         save_waterfall_trace(logs)
         print("\n💡 Hãy thử ngay lệnh: python src/app.py --interactive để chat trực tiếp!")

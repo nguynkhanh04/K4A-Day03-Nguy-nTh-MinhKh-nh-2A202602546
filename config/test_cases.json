@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể giới thiệu quy định mượn trả sách cơ bản của Thư viện VinUni không?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt về quy định chung của thư viện, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu thông tin cuốn sách có mã BK001 trong thư viện.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'library_search' với mã sách BK001.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Tôi muốn gia hạn thêm 10 ngày cho cuốn sách mã BK002 mà tôi đang mượn. Mã thẻ thư viện của tôi là TV2026001.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'renew_book' với mã sách BK002, mã thẻ thư viện TV2026001 và thời gian gia hạn 10 ngày.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tôi có mã thẻ thư viện TV2026001, hãy tra cứu xem tôi đang mượn cuốn sách nào và gia hạn tất cả các cuốn sách đó thêm 10 ngày.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct đa bước: Bước 1 — Gọi Tool 'library_search' để tra cứu danh sách sách đang mượn theo mã thẻ TV2026001. Bước 2 — Dựa trên kết quả Observation, gọi Tool 'renew_book' để gia hạn từng cuốn sách tìm được.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Cho tôi tra cứu thông tin cuốn sách có mã BK9999999 trong thư viện.",
+    "expected_behavior": "Agent gọi Tool 'library_search' với mã BK9999999, nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự rằng không tìm thấy sách có mã này, không bịa đặt dữ liệu.",
+    "complexity": "Medium"
+  }
+]

@@ -39,7 +39,25 @@ class MCPAcademicServer:
         # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
         #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
         # --------------------------------------------------------------------------
-        return {}
+        # 1. Gọi dispatch_tool_call để lấy chuỗi JSON kết quả
+        raw_result = dispatch_tool_call(tool_name, arguments)
+
+        # 2. Chuyển đổi chuỗi JSON thành Python Dictionary
+        try:
+            if isinstance(raw_result, str):
+                content = json.loads(raw_result)
+            else:
+                content = raw_result
+        except Exception as e:
+            content = {"status": "ERROR", "message": f"Lỗi phân tích JSON: {str(e)}"}
+
+        # 3. Đóng gói phản hồi chuẩn MCP JSON-RPC 2.0
+        return {
+            "jsonrpc": "2.0",
+            "server": self.server_name,
+            "tool": tool_name,
+            "result": content
+        }
 
 
 if __name__ == "__main__":
@@ -60,9 +78,11 @@ if __name__ == "__main__":
         print("✅ [TODO 1.2]: Tool 'schedule_appointment' đã có schema đầy đủ.")
 
     # Kiểm tra trạng thái TODO 2.1 (call_tool)
-    test_result = server.call_tool("academic_query", {"student_id": "SV2026001"})
+    tool_to_test = "library_query" if any(t.get("name") == "library_query" for t in tools) else "academic_query"
+    args_to_test = {"book_id": "BK001"} if tool_to_test == "library_query" else {"student_id": "SV2026001"}
+    test_result = server.call_tool(tool_to_test, args_to_test)
     if not test_result:
         print("⏳ [TODO 2.1]: Hàm call_tool() đang trả về rỗng. Học viên hãy hoàn thiện TODO 2.1 trong 'src/mcp_server.py'!")
     else:
-        print(f"✅ [TODO 2.1]: Test dispatch tool 'academic_query' thành công:")
+        print(f"✅ [TODO 2.1]: Test dispatch tool '{tool_to_test}' thành công:")
         print(f"   Phản hồi JSON-RPC: {json.dumps(test_result, ensure_ascii=False)}")

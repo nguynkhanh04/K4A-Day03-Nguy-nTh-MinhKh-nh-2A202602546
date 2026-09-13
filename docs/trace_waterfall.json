@@ -1,29 +1,130 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, bạn có thể giới thiệu quy định mượn trả sách cơ bản của Thư viện VinUni không?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn! Rất vui được hỗ trợ bạn. Dưới đây là các quy định mượn - trả sách cơ bản tại Thư viện Đại học VinUni:\n\n### 1. Đối tượng và Hạn mức mượn sách\n* **Sinh viên đại học (Undergraduate students):** Mượn tối đa **5–10 tài liệu** cùng lúc (tùy thuộc loại tài liệu), thời hạn mượn thông thường từ **14 đến 30 ngày**.\n* **Học viên cao học & Nghiên cứu sinh (Postgraduate students / PhD):** Hạn mức mượn cao hơn và thời hạn dài hơn.\n* **Giảng viên & Nhân viên (Faculty & Staff):** Mượn tối đa theo quy định riêng của nhà trường với thời gian mượn mở rộng.\n\n---\n\n### 2. Gia hạn tài liệu (Renewals)\n* **Gia hạn trực tuyến:** Bạn có thể gia hạn thời gian mượn sách thông qua tài khoản thư viện trực tuyến hoặc nhờ trợ lý thư viện gia hạn giúp.\n* **Điều kiện gia hạn:** \n  * Tài liệu không bị người khác đặt trước (Hold/Reserve).\n  * Thẻ thư viện không trong tình trạng bị khóa hoặc quá hạn phạt.\n  * Số lần gia hạn tối đa áp dụng theo quy định của từng loại sách.\n\n---\n\n### 3. Quy định Phạt quá hạn & Làm hỏng/mất tài liệu\n* **Phạt quá hạn (Late Fees):** Trả sách quá hạn sẽ bị tính phí phạt theo từng ngày quá hạn tùy thuộc vào loại tài liệu (sách tham khảo, giáo trình hay thiết bị).\n* **Mất hoặc hư hỏng tài liệu:** \n  * Đền bù sách mới cùng loại (phiên bản tương đương hoặc mới hơn) **hoặc** nộp chi phí đền bù theo giá trị niêm yết cộng thêm phí xử lý tài liệu.\n\n---\n\n### 4. Một số lưu ý khác\n* **Thẻ thư viện / Thẻ sinh viên:** Là bắt buộc khi thực hiện mượn sách trực tiếp tại quầy hoặc máy tự mượn (Self-check machine).\n* **Tài liệu đọc tại chỗ:** Một số sách quý, từ điển, hoặc tài liệu tham khảo đặc biệt chỉ được sử dụng tại không gian thư viện và không được mang về.\n\nNếu bạn cần tra cứu vị trí sách cụ thể, kiểm tra tình trạng thẻ mượn hoặc gia hạn sách đang mượn, bạn chỉ cần cung cấp **Mã sách (Book ID)** hoặc **Mã thẻ thư viện** cho mình nhé!",
+    "latency_ms": 8798.98
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu thông tin cuốn sách có mã BK001 trong thư viện.",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "library_query",
     "arguments": {
-      "student_id": "SV2026001"
+      "book_id": "BK001"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "book_id": "BK001",
+      "data": {
+        "title": "Introduction to Artificial Intelligence",
+        "author": "Stuart Russell, Peter Norvig",
+        "category": "Công nghệ thông tin",
+        "location": "Tầng 2 - Kệ A3 - Ngăn 05",
+        "total_copies": 3,
+        "available_copies": 1,
+        "status": "Có sẵn"
+      }
+    },
+    "latency_ms": 2609.5
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu thông tin cuốn sách có mã BK001 trong thư viện.",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "Kết quả tra cứu sách BK001: 'Introduction to Artificial Intelligence' của Stuart Russell, Peter Norvig. Thể loại: Công nghệ thông tin, Vị trí: Tầng 2 - Kệ A3 - Ngăn 05. Tình trạng: Có sẵn (1/3 bản có sẵn).",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tôi muốn gia hạn thêm 10 ngày cho cuốn sách mã BK002 mà tôi đang mượn. Mã thẻ thư viện của tôi là TV2026001.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "renew_book",
+    "arguments": {
+      "book_id": "BK002",
+      "extend_days": 10,
+      "library_card_id": "TV2026001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "renew_id": "RN-BK002-TV2026001",
+      "book_id": "BK002",
+      "library_card_id": "TV2026001",
+      "extend_days": 10,
+      "old_due_date": "15/09/2026",
+      "new_due_date": "29/09/2026",
+      "message": "Gia hạn thành công sách 'BK002' thêm 10 ngày cho thẻ TV2026001."
+    },
+    "latency_ms": 3095.73
+  },
+  {
+    "step": 2,
+    "query": "Tôi muốn gia hạn thêm 10 ngày cho cuốn sách mã BK002 mà tôi đang mượn. Mã thẻ thư viện của tôi là TV2026001.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Gia hạn thành công sách 'BK002' thêm 10 ngày cho thẻ TV2026001.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Tôi có mã thẻ thư viện TV2026001, hãy tra cứu xem tôi đang mượn cuốn sách nào và gia hạn tất cả các cuốn sách đó thêm 10 ngày.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "library_query",
+    "arguments": {
+      "book_id": "TV2026001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "book_id": "TV2026001",
+      "data": {
+        "member_name": "Nguyễn Văn An",
+        "email": "an.nv@vinuni.edu.vn",
+        "member_type": "Sinh viên",
+        "status": "Đang hoạt động",
+        "books_borrowed": [
+          {
+            "book_id": "BK002",
+            "title": "Deep Learning",
+            "borrow_date": "01/09/2026",
+            "due_date": "15/09/2026",
+            "renewable": true
+          }
+        ]
+      }
+    },
+    "latency_ms": 3021.34
+  },
+  {
+    "step": 2,
+    "query": "Tôi có mã thẻ thư viện TV2026001, hãy tra cứu xem tôi đang mượn cuốn sách nào và gia hạn tất cả các cuốn sách đó thêm 10 ngày.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Thông tin thẻ thư viện TV2026001: Nguyễn Văn An (Sinh viên). Email: an.nv@vinuni.edu.vn. Trạng thái: Đang hoạt động. Sách đang mượn: Deep Learning.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Cho tôi tra cứu thông tin cuốn sách có mã BK9999999 trong thư viện.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "library_query",
+    "arguments": {
+      "book_id": "BK9999999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy dữ liệu có mã 'BK9999999' trong thư viện."
+    },
+    "latency_ms": 2504.87
+  },
+  {
+    "step": 2,
+    "query": "Cho tôi tra cứu thông tin cuốn sách có mã BK9999999 trong thư viện.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Không tìm thấy dữ liệu có mã 'BK9999999' trong thư viện.",
     "latency_ms": 10.0
   }
 ]
